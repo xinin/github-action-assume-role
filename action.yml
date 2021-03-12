@@ -1,8 +1,8 @@
 inputs:
   AWS_ACCESS_KEY_ID: 
-    default: '${{ secrets.AWS_ACCESS_KEY_ID }}'
+    required: true
   AWS_SECRET_ACCESS_KEY: 
-    default: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
+    required: true
   AWS_REGION: 
     default: 'eu-west-1'
   AWS_EXTERNAL_ID: 
@@ -33,3 +33,4 @@ runs:
       echo "AWS_SECRET_ACCESS_KEY=$(echo $temp_role | jq -r .Credentials.SecretAccessKey)" >> $GITHUB_ENV
       echo "AWS_SESSION_TOKEN=$(echo $temp_role | jq -r .Credentials.SessionToken)" >> $GITHUB_ENV
       echo "AWS_REGION=eu-west-1" >> $GITHUB_ENV
+    shell: bash
