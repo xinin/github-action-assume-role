@@ -1,0 +1,35 @@
+inputs:
+  AWS_ACCESS_KEY_ID: 
+    default: '${{ secrets.AWS_ACCESS_KEY_ID }}'
+  AWS_SECRET_ACCESS_KEY: 
+    default: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
+  AWS_REGION: 
+    default: 'eu-west-1'
+  AWS_EXTERNAL_ID: 
+    description: 'External ID if its configured'
+  AWS_ROLE_TO_ASSUME:
+    description: 'The role that you need to assume'
+    required: true
+  AWS_SESSION_NAME:
+    description: 'STS session name'
+    default: 'github-robot'
+
+runs:
+  using: "composite"
+  steps:
+  - run: |
+      sudo apt-get install jq -y
+      unset  AWS_SESSION_TOKEN
+      export AWS_ACCESS_KEY_ID=${{ inputs.AWS_ACCESS_KEY_ID }}
+      export AWS_SECRET_ACCESS_KEY=${{ inputs.AWS_SECRET_ACCESS_KEY }}
+      export AWS_REGION=${{ inputs.AWS_REGION }}
+
+      temp_role=$(aws sts assume-role \
+                  --role-arn ${{ inputs.AWS_ROLE_TO_ASSUME }} \
+                  --role-session-name ${{ inputs.AWS_SESSION_NAME }} \
+                  --external-id ${{ inputs.AWS_EXTERNAL_ID }})
+
+      echo "AWS_ACCESS_KEY_ID=$(echo $temp_role | jq -r .Credentials.AccessKeyId)" >> $GITHUB_ENV
+      echo "AWS_SECRET_ACCESS_KEY=$(echo $temp_role | jq -r .Credentials.SecretAccessKey)" >> $GITHUB_ENV
+      echo "AWS_SESSION_TOKEN=$(echo $temp_role | jq -r .Credentials.SessionToken)" >> $GITHUB_ENV
+      echo "AWS_REGION=eu-west-1" >> $GITHUB_ENV
