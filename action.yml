@@ -29,8 +29,8 @@ runs:
                   --role-session-name ${{ inputs.AWS_SESSION_NAME }} \
                   --external-id ${{ inputs.AWS_EXTERNAL_ID }})
 
-      echo "AWS_ACCESS_KEY_ID=$(echo $temp_role | jq -r .Credentials.AccessKeyId)" >> $GITHUB_ENV
-      echo "AWS_SECRET_ACCESS_KEY=$(echo $temp_role | jq -r .Credentials.SecretAccessKey)" >> $GITHUB_ENV
-      echo "AWS_SESSION_TOKEN=$(echo $temp_role | jq -r .Credentials.SessionToken)" >> $GITHUB_ENV
-      echo "AWS_REGION=${{ inputs.AWS_REGION }}" >> $GITHUB_ENV
+      $(echo "AWS_ACCESS_KEY_ID=$(echo $temp_role | jq -r .Credentials.AccessKeyId)") >> $GITHUB_ENV
+      $(echo "AWS_SECRET_ACCESS_KEY=$(echo $temp_role | jq -r .Credentials.SecretAccessKey)") >> $GITHUB_ENV
+      $(echo "AWS_SESSION_TOKEN=$(echo $temp_role | jq -r .Credentials.SessionToken)") >> $GITHUB_ENV
+      $(echo "AWS_REGION=${{ inputs.AWS_REGION }}") >> $GITHUB_ENV
     shell: bash
